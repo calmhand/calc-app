@@ -35,6 +35,8 @@
                     case '=':
                         this.$emit('solve')
                         break
+                    case '.':
+                        this.$emit('decimal')
                     default:
                         break
                 }

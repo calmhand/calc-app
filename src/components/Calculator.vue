@@ -1,6 +1,6 @@
 <template>
     <div class="calculator">
-        <div v-if="display.length===0" class="display">0</div>
+        <div v-if="display.length===0" class="display">...</div>
         <div v-if="display.length!=0" class="display">{{display.join("")}}</div>
 
         <!-- row 1 -->
@@ -28,9 +28,8 @@
         <opBtn @add="add" :operation="'+'" />
 
         <!-- row 5 -->
-        <opBtn/>
+        <opBtn @decimal="fraction" :operation="'.'"/>
         <numBtn @returnVal="addToDisplay" :value="0" />
-        <!-- <opBtn/> -->
         <opBtn @solve="solve" :operation="'='"/>
     </div>
 </template>
@@ -48,6 +47,8 @@
             return {
                 display: [],
                 operation: "",
+                negation: false,
+                fractioned: false,
                 fstNum: null,
                 sndNum: null,
                 solution: 0,
@@ -55,32 +56,55 @@
         },
         methods: {
             clearCalc() {
-                this.display = []
                 this.setOperation("")
+                this.display = []
                 this.fstNum = null
                 this.sndNum = null
+                this.negation = false
+                this.fractioned = false
             },
             setOperation(op) {
-                this.operation = op
-                if (this.display.length != 0 && this.fstNum === null) {
-                    this.fstNum = parseInt(this.display.join(""))
-                    this.display = []
+                if (op != "") {
+                    this.operation = op
+                    if (this.display.length != 0 && this.fstNum === null) {
+                        this.fstNum = (() => {
+                            if (!this.negation) {
+                                return parseFloat(this.display.join(""))
+                            } else {
+                                this.display.shift()
+                                return parseFloat(this.display.join("")) * (-1)
+                            }
+                        })
+                        this.fstNum = this.fstNum()
+                        this.fractioned = false
+                        this.display = []
+                    } else {
+                        this.display = []
+                    }
                 } else {
-                    this.display = []
+                    this.operation = op
                 }
             },
             getOperation() {
                 return this.operation
             },
             getFirstNum() {
-                return parseInt(this.fstNum)
+                return parseFloat(this.fstNum)
             },
             getSecondNum() {
-                return parseInt(this.sndNum)
+                return parseFloat(this.sndNum)
             },
             solve() {
                 if (this.display.length != 0 && this.fstNum != null) {
-                    this.sndNum = parseInt(this.display.join(""))
+                    this.sndNum = (() => {
+                            if (!this.negation) {
+                                return parseFloat(this.display.join(""))
+                            } else {
+                                this.display.shift()
+                                return parseFloat(this.display.join("")) * (-1)
+                            }
+                        })
+                    this.sndNum = this.sndNum()
                 }
                 switch (this.getOperation()) {
                     case 'add':
@@ -113,7 +137,6 @@
                         this.fstNum = this.solution
                         this.addToDisplay(this.solution)
                         break;
-                    
                     default:
                         break;
                 }
@@ -121,8 +144,22 @@
             addToDisplay(num) {
                 this.display.push(num)
             },
+            fraction() {
+                if (!this.fractioned) {
+                    this.fractioned = true
+                    this.display.push('.')
+                }
+            },
             negate() {
-                console.log('negate');
+                if (this.display.length === 0) {
+                    this.negation = false
+                } else if (!this.negation) {
+                    this.display.unshift("-")
+                    this.negation = true
+                } else if (this.negation) {
+                    this.display.shift()
+                    this.negation = false
+                }
             },
             modulo() {
                 if (this.getOperation().length === 0) {
