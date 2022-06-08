@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <h2 id="title">Simple Calculator</h2>
+    <h2 id="title">Calmhand's Calculator</h2>
     <Calculator />
   </div>
 </template>
@@ -22,11 +22,15 @@ export default {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
-    color: #2c3e50;
     margin-top: 60px;
+  }
+
+  html {
+    background-color: #000;
   }
 
   #title {
     text-align: center;
+    color: beige;
   }
 </style>

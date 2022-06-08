@@ -1,129 +1,170 @@
 <template>
     <div class="calculator">
-        <div class="display">{{result}}</div>
+        <div v-if="display.length===0" class="display">0</div>
+        <div v-if="display.length!=0" class="display">{{display.join("")}}</div>
 
         <!-- row 1 -->
-        <button @click="clearCalc()" class="option">C</button>
-        <button @click="setOperation('signs')" class="option">+/-</button>
-        <button @click="setOperation('mod')" class="option">%</button>
-        <button @click="setOperation('div')" class="option">/</button>
+        <opBtn @clear-calc="clearCalc" :operation="'C'" />
+        <opBtn @negate="negate" :operation="'NEG'" />
+        <opBtn @modulo="modulo" :operation="'%'" />
+        <opBtn @divide="divide" :operation="'/'"/>
 
         <!-- row 2 -->
-        <button @click="setNum(7)">7</button>
-        <button @click="setNum(8)">8</button>
-        <button @click="setNum(9)">9</button>
-        <button @click="setOperation('multi')" class="option">*</button>
+        <numBtn @returnVal="addToDisplay" :value="7" />
+        <numBtn @returnVal="addToDisplay" :value="8" />
+        <numBtn @returnVal="addToDisplay" :value="9" />
+        <opBtn @multi="multi" :operation="'*'" />
 
         <!-- row 3 -->
-        <button @click="setNum(4)">4</button>
-        <button @click="setNum(5)">5</button>
-        <button @click="setNum(6)">6</button>
-        <button @click="setOperation('sub')" class="option">-</button>
+        <numBtn @returnVal="addToDisplay" :value="4" />
+        <numBtn @returnVal="addToDisplay" :value="5" />
+        <numBtn @returnVal="addToDisplay" :value="6" />
+        <opBtn @subtract="subtract" :operation="'-'" />
 
         <!-- row 4 -->
-        <button @click="setNum(1)">1</button>
-        <button @click="setNum(2)">2</button>
-        <button @click="setNum(3)">3</button>
-        <button @click="setOperation('add')" class="option">+</button>
+        <numBtn @returnVal="addToDisplay" :value="1" />
+        <numBtn @returnVal="addToDisplay" :value="2" />
+        <numBtn @returnVal="addToDisplay" :value="3" />
+        <opBtn @add="add" :operation="'+'" />
 
         <!-- row 5 -->
-        <button></button>
-        <button @click="setNum(0)">0</button>
-        <button></button>
-        <button @click="solve()" class="option">=</button>
+        <opBtn/>
+        <numBtn @returnVal="addToDisplay" :value="0" />
+        <!-- <opBtn/> -->
+        <opBtn @solve="solve" :operation="'='"/>
     </div>
 </template>
 
 <script>
+    import opBtn from './OperatorButton.vue'
+    import numBtn from './NumberButton.vue'
+
     export default {
+        components: {
+            opBtn,
+            numBtn
+        },
         data() {
             return {
+                display: [],
                 operation: "",
-                firstNum: null,
-                secondNum: null,
-                result: 0
+                fstNum: null,
+                sndNum: null,
+                solution: 0,
             }
         },
         methods: {
+            clearCalc() {
+                this.display = []
+                this.setOperation("")
+                this.fstNum = null
+                this.sndNum = null
+            },
             setOperation(op) {
                 this.operation = op
-            },
-            resetOperation() {
-                this.operation = ""
-            },
-            clearCalc() {
-                this.result = 0
-                this.firstNum = null
-                this.secondNum = null
-                this.resetOperation()
-            },
-            setNum(num) {
-                if (this.firstNum != null && this.operation != "") {
-                    this.secondNum = num
-                    this.result = num
-                    console.log(this.firstNum);
-                    console.log(this.secondNum);
+                if (this.display.length != 0 && this.fstNum === null) {
+                    this.fstNum = parseInt(this.display.join(""))
+                    this.display = []
                 } else {
-                    this.firstNum = num
-                    this.result = num
-                    console.log(this.firstNum);
-                    console.log(this.secondNum);
+                    this.display = []
                 }
+            },
+            getOperation() {
+                return this.operation
+            },
+            getFirstNum() {
+                return parseInt(this.fstNum)
+            },
+            getSecondNum() {
+                return parseInt(this.sndNum)
             },
             solve() {
-                if (this.secondNum == null) {
-                    this.result = this.firstNum
-                } else {
-                    switch(this.operation) {
-                        case "add":
-                            this.result = this.add(this.firstNum, this.secondNum)
-                            this.firstNum = this.result
-                            this.secondNum = null
-                            this.resetOperation()
-                            break; 
-                        case "sub":
-                            this.result = this.subtract(this.firstNum, this.secondNum)
-                            this.firstNum = this.result
-                            this.secondNum = null
-                            this.resetOperation()
-                            break; 
-                        case "multi":
-                            this.result = this.multiply(this.firstNum, this.secondNum)
-                            this.firstNum = this.result
-                            this.secondNum = null
-                            this.resetOperation()
-                            break; 
-                        case "div":
-                            this.result = this.divide(this.firstNum, this.secondNum)
-                            this.firstNum = this.result
-                            this.secondNum = null
-                            this.resetOperation()
-                            break; 
-                        case "mod":
-                            this.result = this.modulo(this.firstNum, this.secondNum)
-                            this.firstNum = this.result
-                            this.secondNum = null
-                            this.resetOperation()
-                            break; 
-                    }
+                if (this.display.length != 0 && this.fstNum != null) {
+                    this.sndNum = parseInt(this.display.join(""))
+                }
+                switch (this.getOperation()) {
+                    case 'add':
+                        this.add()
+                        this.clearCalc()
+                        this.fstNum = this.solution
+                        this.addToDisplay(this.solution)
+                        break;
+                    case 'subtract':
+                        this.subtract()
+                        this.clearCalc()
+                        this.fstNum = this.solution
+                        this.addToDisplay(this.solution)
+                        break;
+                    case 'multi':
+                        this.multi()
+                        this.clearCalc()
+                        this.fstNum = this.solution
+                        this.addToDisplay(this.solution)
+                        break;
+                    case 'divide':
+                        this.divide()
+                        this.clearCalc()
+                        this.fstNum = this.solution
+                        this.addToDisplay(this.solution)
+                        break;
+                    case 'modulo':
+                        this.modulo()
+                        this.clearCalc()
+                        this.fstNum = this.solution
+                        this.addToDisplay(this.solution)
+                        break;
+                    
+                    default:
+                        break;
                 }
             },
-            modulo(firstOp, secondOp) {
-                return firstOp % secondOp
+            addToDisplay(num) {
+                this.display.push(num)
             },
-            divide(firstOp, secondOp) {
-                return firstOp / secondOp
+            negate() {
+                console.log('negate');
             },
-            multiply(firstOp, secondOp) {
-                return firstOp * secondOp
+            modulo() {
+                if (this.getOperation().length === 0) {
+                    this.setOperation("modulo")
+                } else {
+                    this.solution = this.getFirstNum() % this.getSecondNum()
+                }
             },
-            subtract(firstOp, secondOp) {
-                return firstOp - secondOp
+            divide() {
+                if (this.getOperation().length === 0) {
+                    this.setOperation("divide")
+                } else {
+                    this.solution = this.getFirstNum() / this.getSecondNum()
+                }
             },
-            add(firstOp, secondOp) {
-                return firstOp + secondOp
+            multi() {
+                if (this.getOperation().length === 0) {
+                    this.setOperation("multi")
+                } else {
+                    this.solution = this.getFirstNum() * this.getSecondNum()
+                }
             },
-        }
+            subtract() {
+                if (this.getOperation().length === 0) {
+                    this.setOperation("subtract")
+                } else {
+                    this.solution = this.getFirstNum() - this.getSecondNum()
+                }
+            },
+            add() {
+                if (this.getOperation().length === 0) {
+                    this.setOperation("add")
+                } else {
+                    this.solution = this.getFirstNum() + this.getSecondNum()
+                }
+            },
+        },
+        emits: [
+            'clear-calc', 'negate', 'modulo', 
+            'divide', 'multi', 'subtract', 
+            'add', 'solve'
+        ],
     }
 </script>
 
@@ -133,16 +174,15 @@
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         grid-auto-rows: minmax(50px, auto);
+        width: 300px;
+        height: 400px;
+        margin: 0px auto;
+        border: 2px solid #fff
     }
 
     .display {
         grid-column: 1 / 5;
-        background-color: lightgray;
-        border: solid black 2px;
+        background-color: #fff;
+        border: solid #fff 2px;
     }
-
-    .option {
-        background-color: rgb(245, 183, 69);
-    }
-
 </style>
