@@ -28,8 +28,8 @@
         <opBtn @add="add" :operation="'+'" />
 
         <!-- row 5 -->
-        <opBtn @decimal="fraction" :operation="'.'"/>
         <numBtn @returnVal="addToDisplay" :value="0" />
+        <opBtn @decimal="fraction" :operation="'.'"/>
         <opBtn @solve="solve" :operation="'='"/>
     </div>
 </template>
@@ -72,7 +72,8 @@
                                 return parseFloat(this.display.join(""))
                             } else {
                                 this.display.shift()
-                                return parseFloat(this.display.join("")) * (-1)
+                                this.negation = false
+                                return parseFloat(this.display.join("")) * (-1.0)
                             }
                         })
                         this.fstNum = this.fstNum()
@@ -95,13 +96,14 @@
                 return parseFloat(this.sndNum)
             },
             solve() {
+                console.log(this.fstNum);
                 if (this.display.length != 0 && this.fstNum != null) {
                     this.sndNum = (() => {
                             if (!this.negation) {
                                 return parseFloat(this.display.join(""))
                             } else {
                                 this.display.shift()
-                                return parseFloat(this.display.join("")) * (-1)
+                                return parseFloat(this.display.join("")) * (-1.0)
                             }
                         })
                     this.sndNum = this.sndNum()
@@ -145,7 +147,9 @@
                 this.display.push(num)
             },
             fraction() {
-                if (!this.fractioned) {
+                if (this.display.length === 0) {
+                    this.fractioned = false
+                } else if (!this.fractioned) {
                     this.fractioned = true
                     this.display.push('.')
                 }
@@ -211,15 +215,15 @@
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         grid-auto-rows: minmax(50px, auto);
+        row-gap: 1rem;
+        column-gap: 1rem;
         width: 300px;
         height: 400px;
-        margin: 0px auto;
-        border: 2px solid #fff
+        margin: 10vh auto;
     }
 
     .display {
         grid-column: 1 / 5;
-        background-color: #fff;
-        border: solid #fff 2px;
+        color: #fff;
     }
 </style>

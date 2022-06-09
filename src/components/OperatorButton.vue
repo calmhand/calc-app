@@ -50,17 +50,14 @@
         background-color: rgb(81, 81, 208);
         text-align: center;
         color: #fff;
-        border: 1px solid #000;
+        border: 0px;
+        width: 50px;
+        border-radius: 30px;
+        justify-self: center;
     }
 
     .op-styles:hover {
         background-color: rgb(116, 116, 203);
         cursor: pointer;
-    }
-
-    /* equals button */
-    button:nth-of-type(19) {
-        grid-column-start: 3;
-        grid-column-end: 5;
     }
 </style>
