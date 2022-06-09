@@ -7,7 +7,7 @@
     "build": "vue-cli-service build",
     "deploy": "gh-pages -d dist"
   },
-  "homepage":"https://calmhand.github.io/calc-app",
+  "homepage":"https://calmhand.github.io/mywebsite",
   "dependencies": {
     "core-js": "^3.8.3",
     "vue": "^3.2.13"
