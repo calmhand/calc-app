@@ -1,5 +1,5 @@
 <template>
-    <p id="title">Calmhand's Calculator</p>
+    <p id="title">Calculator</p>
 </template>
 
 <script>

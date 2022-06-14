@@ -5,16 +5,16 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "sh deploy.sh"
   },
-  "homepage":"https://calmhand.github.io/mywebsite",
+  "homepage":"https://calmhand.github.io/calc-app",
   "dependencies": {
     "core-js": "^3.8.3",
-    "vue": "^3.2.13"
+    "vue": "^3.2.13",
+    "gh-pages": "^4.0.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~5.0.0",
-    "@vue/cli-service": "~5.0.0",
-    "execa": "latest"
+    "@vue/cli-service": "~5.0.0"
   }
 }

@@ -1,6 +1,6 @@
 <template>
     <div class="calculator">
-        <div v-if="display.length===0" class="display">...</div>
+        <div v-if="display.length===0" class="display">0</div>
         <div v-if="display.length!=0" class="display">{{display.join("")}}</div>
 
         <!-- row 1 -->
@@ -144,7 +144,11 @@
                 }
             },
             addToDisplay(num) {
-                this.display.push(num)
+                if (this.display.length === 0 && num === 0) {
+                    return null
+                } else {
+                    this.display.push(num)
+                }
             },
             fraction() {
                 if (this.display.length === 0) {

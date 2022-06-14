@@ -6,7 +6,7 @@
 
 <style scoped>
     p {
-        color: #fff;
+        color: beige;
     }
 
     footer {
