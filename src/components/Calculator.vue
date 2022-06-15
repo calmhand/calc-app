@@ -152,7 +152,9 @@
             },
             fraction() {
                 if (this.display.length === 0) {
-                    this.fractioned = false
+                    this.display.push('0')
+                    this.display.push('.')
+                    this.fractioned = true
                 } else if (!this.fractioned) {
                     this.fractioned = true
                     this.display.push('.')
