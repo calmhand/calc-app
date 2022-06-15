@@ -20,10 +20,12 @@
         width: 50px;
         border-radius: 30px;
         justify-self: center;
+        
     }
 
     .num-styles:hover {
         background-color: rgb(210, 210, 210);
+        cursor: pointer;
     }
 
     /* 0 button */
